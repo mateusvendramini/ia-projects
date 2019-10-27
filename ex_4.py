@@ -15,13 +15,18 @@ if __name__ == '__main__':
     kf = KFold(n_splits=5, shuffle=False)
     kf.get_n_splits(train_inputs, train_targets)
     for train,test in kf.split(train_inputs, train_targets):
-        print(train)
-        print(test)
+        #print(train)
+        #print(test)
         train_batch = None
+        target_batch = None
         for id in train:
             if train_batch is not None:
-                train_batch = 
+                train_batch.append(train_inputs[id])
+                target_batch.append(train_targets[id])
             else:
-                train_batch = []
+                train_batch = [train_inputs[id]]
+                target_batch = [train_targets[id]]
+        print(train_batch)
+        print(target_batch)
 
     
