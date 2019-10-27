@@ -3,7 +3,7 @@ from sklearn.tree import DecisionTreeRegressor
 from sklearn.model_selection import KFold
 import numpy as np  
 from pandas import read_csv
-
+from sklearn.metrics import mean_absolute_error
 
 if __name__ == '__main__':
     # Load dataset
@@ -14,19 +14,11 @@ if __name__ == '__main__':
     train_targets = asarray(dataset[dataset.columns[-1]])
     kf = KFold(n_splits=5, shuffle=False)
     kf.get_n_splits(train_inputs, train_targets)
-    for train,test in kf.split(train_inputs, train_targets):
-        #print(train)
-        #print(test)
-        train_batch = None
-        target_batch = None
-        for id in train:
-            if train_batch is not None:
-                train_batch.append(train_inputs[id])
-                target_batch.append(train_targets[id])
-            else:
-                train_batch = [train_inputs[id]]
-                target_batch = [train_targets[id]]
-        print(train_batch)
-        print(target_batch)
+    for k, (train,test) in enumerate(kf.split(train_inputs, train_targets)):
+        dtr = DecisionTreeRegressor(criterion ="mse")
+        dtr.fit(train_inputs[train], train_targets[train])
+        print("Fold %d" %k)
+        print("MAE for Train %f" %mean_absolute_error(train_targets[train], dtr.predict(train_inputs[train])))
+        print("MAE for Validation %f" %mean_absolute_error(train_targets[test], dtr.predict(train_inputs[test])))
 
     
